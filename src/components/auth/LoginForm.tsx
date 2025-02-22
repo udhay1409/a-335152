@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { LogIn, Lock, Mail } from "lucide-react";
+import { LogIn, Brain, Shield, ActivitySquare } from "lucide-react";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -16,7 +16,6 @@ export default function LoginForm() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // TODO: Implement actual login logic
     if (email && password) {
       toast({
         title: "Login successful",
@@ -33,50 +32,101 @@ export default function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-md p-8 space-y-6 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
-      <div className="space-y-2 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900">Welcome Back</h2>
-        <p className="text-gray-500">Enter your credentials to continue</p>
-      </div>
-      <form onSubmit={handleLogin} className="space-y-4">
-        <div className="space-y-2">
-          <div className="relative">
-            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="pl-10"
-              required
-            />
+    <div className="w-full min-h-screen flex flex-col lg:flex-row">
+      {/* Left side - Features */}
+      <div className="w-full lg:w-1/2 bg-gradient-to-br from-medical-50 to-medical-100 p-8 lg:p-16 flex flex-col justify-center">
+        <div className="max-w-xl mx-auto">
+          <h1 className="text-4xl font-bold text-medical-700 mb-4">AI-Powered Healthcare</h1>
+          <p className="text-medical-600 mb-12">
+            Advanced disease prediction and treatment recommendations powered by blockchain technology
+          </p>
+
+          <div className="space-y-8">
+            <div className="flex items-start space-x-4">
+              <div className="p-2 bg-white/80 rounded-lg">
+                <Brain className="h-6 w-6 text-medical-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-medical-700 mb-1">AI Diagnosis</h3>
+                <p className="text-medical-600">Advanced symptom analysis and disease prediction</p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="p-2 bg-white/80 rounded-lg">
+                <Shield className="h-6 w-6 text-medical-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-medical-700 mb-1">Secure Blockchain</h3>
+                <p className="text-medical-600">Your medical data is encrypted and secure</p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="p-2 bg-white/80 rounded-lg">
+                <ActivitySquare className="h-6 w-6 text-medical-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-medical-700 mb-1">Treatment Tracking</h3>
+                <p className="text-medical-600">Monitor your progress and medical history</p>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="space-y-2">
-          <div className="relative">
-            <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="pl-10"
-              required
-            />
-          </div>
-        </div>
-        <Button type="submit" className="w-full bg-medical-500 hover:bg-medical-600 text-white">
-          <LogIn className="mr-2 h-4 w-4" /> Sign In
-        </Button>
-      </form>
-      <div className="text-center">
-        <button
-          onClick={() => navigate("/signup")}
-          className="text-medical-600 hover:text-medical-700 text-sm transition-colors"
-        >
-          Don't have an account? Sign up
-        </button>
       </div>
-    </Card>
+
+      {/* Right side - Login Form */}
+      <div className="w-full lg:w-1/2 p-8 lg:p-16 flex items-center justify-center">
+        <Card className="w-full max-w-md p-8 space-y-6">
+          <div className="space-y-2 text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900">Welcome Back</h2>
+            <p className="text-gray-500">Enter your credentials to access your account</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <Button type="submit" className="w-full bg-medical-500 hover:bg-medical-600 text-white">
+              <LogIn className="mr-2 h-4 w-4" /> Login
+            </Button>
+          </form>
+
+          <div className="text-center">
+            <button
+              onClick={() => navigate("/signup")}
+              className="text-medical-600 hover:text-medical-700 text-sm transition-colors"
+            >
+              Don't have an account? Sign up
+            </button>
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 }

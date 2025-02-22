@@ -4,7 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Stethoscope, ThermometerSun } from "lucide-react";
+import { Stethoscope, ThermometerSun, PieChart as PieChartIcon } from "lucide-react";
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+
+// Mock data for the charts
+const symptomData = [
+  { name: "Primary Symptoms", value: 60, color: "#9b87f5" },
+  { name: "Secondary Symptoms", value: 25, color: "#7E69AB" },
+  { name: "Related Conditions", value: 15, color: "#D6BCFA" },
+];
+
+const treatmentData = [
+  { name: "Rest", effectiveness: 85, color: "#9b87f5" },
+  { name: "Hydration", effectiveness: 75, color: "#7E69AB" },
+  { name: "Medication", effectiveness: 65, color: "#D6BCFA" },
+  { name: "Exercise", effectiveness: 45, color: "#8E9196" },
+];
 
 export default function Symptoms() {
   const [symptoms, setSymptoms] = useState("");
@@ -84,31 +99,84 @@ export default function Symptoms() {
         </Card>
 
         {prediction && (
-          <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
-            <div className="flex items-center gap-3 mb-4">
-              <ThermometerSun className="h-6 w-6 text-medical-500" />
-              <h2 className="text-2xl font-bold text-gray-900">Analysis Results</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-semibold text-gray-700">Possible Condition</h3>
-                <p className="text-gray-600">{prediction.disease}</p>
+          <>
+            <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
+              <div className="flex items-center gap-3 mb-4">
+                <ThermometerSun className="h-6 w-6 text-medical-500" />
+                <h2 className="text-2xl font-bold text-gray-900">Analysis Results</h2>
               </div>
               
-              <div>
-                <h3 className="font-semibold text-gray-700">Recommended Treatment</h3>
-                <p className="text-gray-600">{prediction.treatment}</p>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold text-gray-700">Possible Condition</h3>
+                  <p className="text-gray-600">{prediction.disease}</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold text-gray-700">Recommended Treatment</h3>
+                  <p className="text-gray-600">{prediction.treatment}</p>
+                </div>
+                
+                <div className="mt-4 p-4 bg-medical-50 rounded-lg">
+                  <p className="text-sm text-medical-600">
+                    Note: This is an AI-powered analysis and should not replace professional medical advice. 
+                    Please consult with a healthcare provider for proper diagnosis and treatment.
+                  </p>
+                </div>
               </div>
-              
-              <div className="mt-4 p-4 bg-medical-50 rounded-lg">
-                <p className="text-sm text-medical-600">
-                  Note: This is an AI-powered analysis and should not replace professional medical advice. 
-                  Please consult with a healthcare provider for proper diagnosis and treatment.
-                </p>
-              </div>
+            </Card>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
+                <div className="flex items-center gap-3 mb-4">
+                  <PieChartIcon className="h-6 w-6 text-medical-500" />
+                  <h2 className="text-2xl font-bold text-gray-900">Symptom Distribution</h2>
+                </div>
+                <div className="h-[300px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={symptomData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, value }) => `${name}: ${value}%`}
+                      >
+                        {symptomData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
+
+              <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
+                <div className="flex items-center gap-3 mb-4">
+                  <ThermometerSun className="h-6 w-6 text-medical-500" />
+                  <h2 className="text-2xl font-bold text-gray-900">Treatment Effectiveness</h2>
+                </div>
+                <div className="h-[300px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={treatmentData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis label={{ value: 'Effectiveness (%)', angle: -90, position: 'insideLeft' }} />
+                      <Tooltip />
+                      <Bar dataKey="effectiveness">
+                        {treatmentData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
             </div>
-          </Card>
+          </>
         )}
 
         <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">

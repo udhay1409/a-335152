@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { stethoscope } from "lucide-react";
+import { Stethoscope } from "lucide-react";
 
 export default function Symptoms() {
   const [symptoms, setSymptoms] = useState("");
@@ -45,7 +45,7 @@ export default function Symptoms() {
               />
             </div>
             <Button type="submit" className="w-full bg-medical-500 hover:bg-medical-600 text-white">
-              <stethoscope className="mr-2 h-5 w-5" />
+              <Stethoscope className="mr-2 h-5 w-5" />
               Analyze Symptoms
             </Button>
           </form>

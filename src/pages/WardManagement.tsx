@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -323,7 +322,7 @@ const WardManagement = () => {
                       <div className="text-xs text-gray-600">
                         Admitted: {bed.admissionDate}
                       </div>
-                      <Badge className={getConditionColor(bed.condition || "")} size="sm">
+                      <Badge className={getConditionColor(bed.condition || "")}>
                         {bed.condition}
                       </Badge>
                       <div className="text-xs text-gray-600">Dr: {bed.doctor}</div>

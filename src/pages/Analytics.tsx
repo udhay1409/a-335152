@@ -200,7 +200,7 @@ const Analytics = () => {
                       <div className="text-right">
                         <div className="font-semibold">{item.count}</div>
                         <div className="text-sm text-gray-600">
-                          {((item.count / appointmentStatusData.reduce((sum, i) => sum + i.count, 0)) * 100).toFixed(1)}%
+                          {((Number(item.count) / appointmentStatusData.reduce((sum, i) => sum + Number(i.count), 0)) * 100).toFixed(1)}%
                         </div>
                       </div>
                     </div>
@@ -220,13 +220,13 @@ const Analytics = () => {
                       <div className="flex justify-between items-center">
                         <span className="font-medium">{ward.ward}</span>
                         <span className="text-sm text-gray-600">
-                          {ward.occupied}/{ward.total} ({Math.round((ward.occupied / ward.total) * 100)}%)
+                          {ward.occupied}/{ward.total} ({Math.round((Number(ward.occupied) / Number(ward.total)) * 100)}%)
                         </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
                           className="bg-medical-500 h-2 rounded-full" 
-                          style={{ width: `${(ward.occupied / ward.total) * 100}%` }}
+                          style={{ width: `${(Number(ward.occupied) / Number(ward.total)) * 100}%` }}
                         ></div>
                       </div>
                     </div>

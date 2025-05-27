@@ -10,6 +10,7 @@ import ABHAStatus from "@/components/patients/ABHAStatus";
 import PatientFormDialog from "@/components/patients/PatientFormDialog";
 import PatientDetailsDialog from "@/components/patients/PatientDetailsDialog";
 import ScheduleDialog from "@/components/patients/ScheduleDialog";
+import MedicalRecordsDialog from "@/components/patients/MedicalRecordsDialog";
 
 const Patients = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -216,9 +217,14 @@ const Patients = () => {
                     patientId={patient.id}
                     existingABHA={patient.abhaId}
                   />
-                  <Button variant="outline" size="sm" className="flex-1 text-xs">
-                    View Records
-                  </Button>
+                  <MedicalRecordsDialog
+                    patient={patient}
+                    trigger={
+                      <Button variant="outline" size="sm" className="flex-1 text-xs">
+                        View Records
+                      </Button>
+                    }
+                  />
                 </div>
               )}
             </CardContent>

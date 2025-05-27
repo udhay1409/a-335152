@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Users, Search, Plus, Phone, Mail, Calendar } from "lucide-react";
+import { Users, Search, Plus, Phone, Mail, Calendar, Shield } from "lucide-react";
+import ABHAModal from "@/components/patients/ABHAModal";
+import ABHAStatus from "@/components/patients/ABHAStatus";
 
 const Patients = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,7 +21,9 @@ const Patients = () => {
       email: "john.smith@email.com",
       lastVisit: "2024-01-15",
       condition: "Hypertension",
-      status: "Active"
+      status: "Active",
+      abhaId: "12-3456-7890-1234",
+      abhaVerified: true
     },
     {
       id: 2,
@@ -30,7 +34,9 @@ const Patients = () => {
       email: "sarah.j@email.com",
       lastVisit: "2024-01-20",
       condition: "Diabetes",
-      status: "Active"
+      status: "Active",
+      abhaId: "98-7654-3210-9876",
+      abhaVerified: false
     },
     {
       id: 3,
@@ -52,13 +58,16 @@ const Patients = () => {
       email: "emily.davis@email.com",
       lastVisit: "2024-01-22",
       condition: "Asthma",
-      status: "Active"
+      status: "Active",
+      abhaId: "11-2233-4455-6677",
+      abhaVerified: true
     }
   ];
 
   const filteredPatients = patients.filter(patient =>
     patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    patient.condition.toLowerCase().includes(searchTerm.toLowerCase())
+    patient.condition.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (patient.abhaId && patient.abhaId.includes(searchTerm))
   );
 
   const getStatusColor = (status: string) => {
@@ -90,7 +99,7 @@ const Patients = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search patients by name or condition..."
+                placeholder="Search patients by name, condition, or ABHA ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -112,6 +121,25 @@ const Patients = () => {
                 </Badge>
               </div>
               <p className="text-sm text-gray-600">{patient.age} years old • {patient.gender}</p>
+              
+              {/* ABHA Status */}
+              <div className="flex items-center justify-between mt-2">
+                <ABHAStatus 
+                  abhaId={patient.abhaId} 
+                  verified={patient.abhaVerified}
+                />
+                {!patient.abhaId && (
+                  <ABHAModal
+                    trigger={
+                      <Button variant="outline" size="sm" className="text-xs">
+                        <Shield className="h-3 w-3 mr-1" />
+                        Add ABHA
+                      </Button>
+                    }
+                    patientId={patient.id}
+                  />
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-2">
@@ -142,6 +170,25 @@ const Patients = () => {
                   Schedule
                 </Button>
               </div>
+
+              {/* ABHA Actions */}
+              {patient.abhaId && (
+                <div className="flex gap-2 pt-1">
+                  <ABHAModal
+                    trigger={
+                      <Button variant="outline" size="sm" className="flex-1 text-xs">
+                        <Shield className="h-3 w-3 mr-1" />
+                        Manage ABHA
+                      </Button>
+                    }
+                    patientId={patient.id}
+                    existingABHA={patient.abhaId}
+                  />
+                  <Button variant="outline" size="sm" className="flex-1 text-xs">
+                    View Records
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}

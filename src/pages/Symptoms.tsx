@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -116,118 +115,120 @@ export default function Symptoms() {
   };
 
   return (
-    <div className="min-h-screen p-4 bg-gradient-to-br from-medical-50 to-medical-100">
-      <div className="max-w-4xl mx-auto space-y-8 pt-8">
-        <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Symptom Analysis</h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-gray-700 font-medium">Describe your symptoms</label>
-              <Textarea
-                value={symptoms}
-                onChange={(e) => setSymptoms(e.target.value)}
-                placeholder="Please describe your symptoms in detail (e.g., fever, headache, cough)..."
-                className="min-h-[200px] resize-none"
-                required
-              />
-            </div>
-            <Button 
-              type="submit" 
-              className="w-full bg-medical-500 hover:bg-medical-600 text-white"
-              disabled={loading}
-            >
-              <Stethoscope className="mr-2 h-5 w-5" />
-              {loading ? "Analyzing..." : "Analyze Symptoms"}
-            </Button>
-          </form>
-        </Card>
+    <div className="p-6 space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <Stethoscope className="h-8 w-8 text-medical-500" />
+        <h1 className="text-3xl font-bold text-gray-900">AI Symptom Analysis</h1>
+      </div>
 
-        {prediction && selectedDisease && (
-          <>
-            <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
-              <div className="flex items-center gap-3 mb-4">
-                <Activity className="h-6 w-6 text-medical-500" />
-                <h2 className="text-2xl font-bold text-gray-900">Analysis Results</h2>
+      <Card className="p-8 bg-white border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-gray-700 font-medium">Describe your symptoms</label>
+            <Textarea
+              value={symptoms}
+              onChange={(e) => setSymptoms(e.target.value)}
+              placeholder="Please describe your symptoms in detail (e.g., fever, headache, cough)..."
+              className="min-h-[200px] resize-none"
+              required
+            />
+          </div>
+          <Button 
+            type="submit" 
+            className="w-full bg-medical-500 hover:bg-medical-600 text-white"
+            disabled={loading}
+          >
+            <Stethoscope className="mr-2 h-5 w-5" />
+            {loading ? "Analyzing..." : "Analyze Symptoms"}
+          </Button>
+        </form>
+      </Card>
+
+      {prediction && selectedDisease && (
+        <>
+          <Card className="p-8 bg-white border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
+            <div className="flex items-center gap-3 mb-4">
+              <Activity className="h-6 w-6 text-medical-500" />
+              <h2 className="text-2xl font-bold text-gray-900">Analysis Results</h2>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-gray-700">Possible Condition</h3>
+                <p className="text-gray-600">{prediction.disease}</p>
               </div>
               
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-gray-700">Possible Condition</h3>
-                  <p className="text-gray-600">{prediction.disease}</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold text-gray-700">Recommended Treatment</h3>
-                  <p className="text-gray-600">{prediction.treatment}</p>
-                </div>
-                
-                <div className="mt-4 p-4 bg-medical-50 rounded-lg">
-                  <p className="text-sm text-medical-600">
-                    Note: This is an AI-powered analysis and should not replace professional medical advice. 
-                    Please consult with a healthcare provider for proper diagnosis and treatment.
-                  </p>
-                </div>
+              <div>
+                <h3 className="font-semibold text-gray-700">Recommended Treatment</h3>
+                <p className="text-gray-600">{prediction.treatment}</p>
+              </div>
+              
+              <div className="mt-4 p-4 bg-medical-50 rounded-lg">
+                <p className="text-sm text-medical-600">
+                  Note: This is an AI-powered analysis and should not replace professional medical advice. 
+                  Please consult with a healthcare provider for proper diagnosis and treatment.
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="p-8 bg-white border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
+              <div className="flex items-center gap-3 mb-4">
+                <PieChartIcon className="h-6 w-6 text-medical-500" />
+                <h2 className="text-2xl font-bold text-gray-900">Symptom Distribution</h2>
+              </div>
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={diseases[selectedDisease].symptoms}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label={({ name, value }) => `${name}: ${value}%`}
+                    >
+                      {diseases[selectedDisease].symptoms.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
             </Card>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
-                <div className="flex items-center gap-3 mb-4">
-                  <PieChartIcon className="h-6 w-6 text-medical-500" />
-                  <h2 className="text-2xl font-bold text-gray-900">Symptom Distribution</h2>
-                </div>
-                <div className="h-[300px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={diseases[selectedDisease].symptoms}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, value }) => `${name}: ${value}%`}
-                      >
-                        {diseases[selectedDisease].symptoms.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </Card>
+            <Card className="p-8 bg-white border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
+              <div className="flex items-center gap-3 mb-4">
+                <ThermometerSun className="h-6 w-6 text-medical-500" />
+                <h2 className="text-2xl font-bold text-gray-900">Treatment Effectiveness</h2>
+              </div>
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={diseases[selectedDisease].treatments}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis label={{ value: 'Effectiveness (%)', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip />
+                    <Bar dataKey="effectiveness">
+                      {diseases[selectedDisease].treatments.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+          </div>
+        </>
+      )}
 
-              <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
-                <div className="flex items-center gap-3 mb-4">
-                  <ThermometerSun className="h-6 w-6 text-medical-500" />
-                  <h2 className="text-2xl font-bold text-gray-900">Treatment Effectiveness</h2>
-                </div>
-                <div className="h-[300px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={diseases[selectedDisease].treatments}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis label={{ value: 'Effectiveness (%)', angle: -90, position: 'insideLeft' }} />
-                      <Tooltip />
-                      <Bar dataKey="effectiveness">
-                        {diseases[selectedDisease].treatments.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </Card>
-            </div>
-          </>
-        )}
-
-        <Card className="p-8 bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Medical History</h2>
-          <p className="text-gray-500">No previous medical records found.</p>
-        </Card>
-      </div>
+      <Card className="p-8 bg-white border border-gray-100 rounded-xl shadow-lg animate-fadeIn">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Medical History</h2>
+        <p className="text-gray-500">No previous medical records found.</p>
+      </Card>
     </div>
   );
 }

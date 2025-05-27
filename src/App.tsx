@@ -7,7 +7,13 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Symptoms from "./pages/Symptoms";
+import Dashboard from "./pages/Dashboard";
+import Patients from "./pages/Patients";
+import Appointments from "./pages/Appointments";
+import Reports from "./pages/Reports";
+import HealthMetrics from "./pages/HealthMetrics";
 import NotFound from "./pages/NotFound";
+import AppLayout from "./components/layout/AppLayout";
 
 function App() {
   const queryClient = new QueryClient();
@@ -22,7 +28,14 @@ function App() {
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/symptoms" element={<Symptoms />} />
+            <Route path="/" element={<AppLayout />}>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="symptoms" element={<Symptoms />} />
+              <Route path="patients" element={<Patients />} />
+              <Route path="appointments" element={<Appointments />} />
+              <Route path="reports" element={<Reports />} />
+              <Route path="metrics" element={<HealthMetrics />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

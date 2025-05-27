@@ -4,9 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Users, Search, Plus, Phone, Mail, Calendar, Shield } from "lucide-react";
+import { Users, Search, Phone, Mail, Calendar, Shield, Edit } from "lucide-react";
 import ABHAModal from "@/components/patients/ABHAModal";
 import ABHAStatus from "@/components/patients/ABHAStatus";
+import PatientFormDialog from "@/components/patients/PatientFormDialog";
+import PatientDetailsDialog from "@/components/patients/PatientDetailsDialog";
+import ScheduleDialog from "@/components/patients/ScheduleDialog";
 
 const Patients = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,7 +26,10 @@ const Patients = () => {
       condition: "Hypertension",
       status: "Active",
       abhaId: "12-3456-7890-1234",
-      abhaVerified: true
+      abhaVerified: true,
+      allergies: ["Penicillin", "Shellfish"],
+      emergencyContact: "Jane Smith",
+      emergencyPhone: "+1 (555) 123-4568"
     },
     {
       id: 2,
@@ -36,7 +42,10 @@ const Patients = () => {
       condition: "Diabetes",
       status: "Active",
       abhaId: "98-7654-3210-9876",
-      abhaVerified: false
+      abhaVerified: false,
+      allergies: [],
+      emergencyContact: "Mark Johnson",
+      emergencyPhone: "+1 (555) 987-6544"
     },
     {
       id: 3,
@@ -47,7 +56,10 @@ const Patients = () => {
       email: "m.brown@email.com",
       lastVisit: "2024-01-18",
       condition: "Arthritis",
-      status: "Recovery"
+      status: "Recovery",
+      allergies: ["Latex"],
+      emergencyContact: "Lisa Brown",
+      emergencyPhone: "+1 (555) 456-7891"
     },
     {
       id: 4,
@@ -60,7 +72,10 @@ const Patients = () => {
       condition: "Asthma",
       status: "Active",
       abhaId: "11-2233-4455-6677",
-      abhaVerified: true
+      abhaVerified: true,
+      allergies: ["Dust", "Pollen"],
+      emergencyContact: "Robert Davis",
+      emergencyPhone: "+1 (555) 321-0988"
     }
   ];
 
@@ -86,10 +101,7 @@ const Patients = () => {
           <Users className="h-8 w-8 text-medical-500" />
           <h1 className="text-3xl font-bold text-gray-900">Patient Management</h1>
         </div>
-        <Button className="bg-medical-500 hover:bg-medical-600">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Patient
-        </Button>
+        <PatientFormDialog />
       </div>
 
       {/* Search and Filter */}
@@ -116,9 +128,19 @@ const Patients = () => {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">{patient.name}</CardTitle>
-                <Badge className={getStatusColor(patient.status)}>
-                  {patient.status}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge className={getStatusColor(patient.status)}>
+                    {patient.status}
+                  </Badge>
+                  <PatientFormDialog
+                    patient={patient}
+                    trigger={
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    }
+                  />
+                </div>
               </div>
               <p className="text-sm text-gray-600">{patient.age} years old • {patient.gender}</p>
               
@@ -163,12 +185,22 @@ const Patients = () => {
               </div>
               
               <div className="flex gap-2 pt-2">
-                <Button variant="outline" size="sm" className="flex-1">
-                  View Details
-                </Button>
-                <Button size="sm" className="flex-1 bg-medical-500 hover:bg-medical-600">
-                  Schedule
-                </Button>
+                <PatientDetailsDialog
+                  patient={patient}
+                  trigger={
+                    <Button variant="outline" size="sm" className="flex-1">
+                      View Details
+                    </Button>
+                  }
+                />
+                <ScheduleDialog
+                  patient={patient}
+                  trigger={
+                    <Button size="sm" className="flex-1 bg-medical-500 hover:bg-medical-600">
+                      Schedule
+                    </Button>
+                  }
+                />
               </div>
 
               {/* ABHA Actions */}

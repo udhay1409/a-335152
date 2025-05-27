@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { FileText, Save, Eye, Ear, Heart, Lungs } from "lucide-react";
+import { FileText, Save, Eye, Ear, Heart, Wind } from "lucide-react";
 
 interface ExaminationNotesProps {
   patientId: string;
@@ -25,7 +24,7 @@ const ExaminationNotes = ({ patientId }: ExaminationNotesProps) => {
   const systemsExam = [
     { id: "general", name: "General Appearance", icon: Eye, color: "text-blue-500" },
     { id: "cardiovascular", name: "Cardiovascular", icon: Heart, color: "text-red-500" },
-    { id: "respiratory", name: "Respiratory", icon: Lungs, color: "text-green-500" },
+    { id: "respiratory", name: "Respiratory", icon: Wind, color: "text-green-500" },
     { id: "neurological", name: "Neurological", icon: FileText, color: "text-purple-500" },
     { id: "gastrointestinal", name: "Gastrointestinal", icon: FileText, color: "text-yellow-500" },
     { id: "musculoskeletal", name: "Musculoskeletal", icon: FileText, color: "text-orange-500" },

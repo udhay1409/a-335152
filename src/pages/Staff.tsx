@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Users, Plus, Search, Filter, Stethoscope, UserNurse, UserCheck, Clock, Phone, Mail, MapPin } from "lucide-react";
+import { Users, Plus, Search, Filter, Stethoscope, User, UserCheck, Clock, Phone, Mail, MapPin } from "lucide-react";
 
 const Staff = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("all");
@@ -89,7 +88,7 @@ const Staff = () => {
 
   const getRoleIcon = (role: string) => {
     if (role.includes("Dr.") || role.includes("Doctor")) return <Stethoscope className="h-4 w-4" />;
-    if (role.includes("Nurse")) return <UserNurse className="h-4 w-4" />;
+    if (role.includes("Nurse")) return <User className="h-4 w-4" />;
     return <UserCheck className="h-4 w-4" />;
   };
 

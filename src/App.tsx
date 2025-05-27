@@ -9,6 +9,7 @@ import SignUp from "./pages/SignUp";
 import Symptoms from "./pages/Symptoms";
 import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
+import PatientExam from "./pages/PatientExam";
 import Appointments from "./pages/Appointments";
 import Reports from "./pages/Reports";
 import HealthMetrics from "./pages/HealthMetrics";
@@ -42,6 +43,7 @@ function App() {
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="symptoms" element={<Symptoms />} />
               <Route path="patients" element={<Patients />} />
+              <Route path="patient-exam" element={<PatientExam />} />
               <Route path="appointments" element={<Appointments />} />
               <Route path="reports" element={<Reports />} />
               <Route path="metrics" element={<HealthMetrics />} />
@@ -50,7 +52,7 @@ function App() {
               <Route path="inventory" element={<Inventory />} />
               <Route path="ward-management" element={<WardManagement />} />
               <Route path="laboratory" element={<Laboratory />} />
-              <Route path="pharmacy" element={<Pharmacy />} />
+              <Route path="pharmacy" element={<Laboratory />} />
               <Route path="emergency" element={<Emergency />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="user-management" element={<UserManagement />} />

@@ -10,6 +10,9 @@ import {
   Calendar, 
   FileText, 
   Activity,
+  UserCheck,
+  CreditCard,
+  Package,
   LogOut,
   Menu,
   X
@@ -29,6 +32,9 @@ const Sidebar = () => {
     { icon: Calendar, label: "Appointments", path: "/appointments" },
     { icon: FileText, label: "Reports", path: "/reports" },
     { icon: Activity, label: "Health Metrics", path: "/metrics" },
+    { icon: UserCheck, label: "Staff", path: "/staff" },
+    { icon: CreditCard, label: "Billing", path: "/billing" },
+    { icon: Package, label: "Inventory", path: "/inventory" },
   ];
 
   const handleLogout = () => {
@@ -57,7 +63,7 @@ const Sidebar = () => {
         </div>
       </div>
       
-      <nav className="p-4 space-y-2">
+      <nav className="p-4 space-y-2 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 140px)' }}>
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;

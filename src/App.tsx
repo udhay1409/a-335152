@@ -12,6 +12,9 @@ import Patients from "./pages/Patients";
 import Appointments from "./pages/Appointments";
 import Reports from "./pages/Reports";
 import HealthMetrics from "./pages/HealthMetrics";
+import Staff from "./pages/Staff";
+import Billing from "./pages/Billing";
+import Inventory from "./pages/Inventory";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/layout/AppLayout";
 
@@ -35,6 +38,9 @@ function App() {
               <Route path="appointments" element={<Appointments />} />
               <Route path="reports" element={<Reports />} />
               <Route path="metrics" element={<HealthMetrics />} />
+              <Route path="staff" element={<Staff />} />
+              <Route path="billing" element={<Billing />} />
+              <Route path="inventory" element={<Inventory />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

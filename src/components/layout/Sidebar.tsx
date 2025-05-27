@@ -20,7 +20,9 @@ import {
   BarChart3,
   LogOut,
   Menu,
-  X
+  X,
+  Settings,
+  UserCog
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -45,14 +47,22 @@ const Sidebar = () => {
     { icon: Pill, label: "Pharmacy", path: "/pharmacy" },
     { icon: Siren, label: "Emergency", path: "/emergency" },
     { icon: BarChart3, label: "Analytics", path: "/analytics" },
+    { icon: UserCog, label: "User Management", path: "/user-management" },
+    { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
   const handleLogout = () => {
+    // Clear any stored user data
+    localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
+    
     toast({
       title: "Logged out successfully",
       description: "You have been logged out of your account.",
     });
-    navigate("/login");
+    
+    // Navigate to login page
+    navigate("/login", { replace: true });
   };
 
   return (

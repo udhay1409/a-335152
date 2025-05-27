@@ -20,6 +20,8 @@ import Laboratory from "./pages/Laboratory";
 import Pharmacy from "./pages/Pharmacy";
 import Emergency from "./pages/Emergency";
 import Analytics from "./pages/Analytics";
+import UserManagement from "./pages/UserManagement";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/layout/AppLayout";
 
@@ -51,6 +53,8 @@ function App() {
               <Route path="pharmacy" element={<Pharmacy />} />
               <Route path="emergency" element={<Emergency />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="user-management" element={<UserManagement />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

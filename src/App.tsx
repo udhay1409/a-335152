@@ -15,6 +15,11 @@ import HealthMetrics from "./pages/HealthMetrics";
 import Staff from "./pages/Staff";
 import Billing from "./pages/Billing";
 import Inventory from "./pages/Inventory";
+import WardManagement from "./pages/WardManagement";
+import Laboratory from "./pages/Laboratory";
+import Pharmacy from "./pages/Pharmacy";
+import Emergency from "./pages/Emergency";
+import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/layout/AppLayout";
 
@@ -41,6 +46,11 @@ function App() {
               <Route path="staff" element={<Staff />} />
               <Route path="billing" element={<Billing />} />
               <Route path="inventory" element={<Inventory />} />
+              <Route path="ward-management" element={<WardManagement />} />
+              <Route path="laboratory" element={<Laboratory />} />
+              <Route path="pharmacy" element={<Pharmacy />} />
+              <Route path="emergency" element={<Emergency />} />
+              <Route path="analytics" element={<Analytics />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

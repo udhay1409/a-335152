@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,11 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Pill, Plus, Search, Filter, AlertTriangle, CheckCircle, Package, User, Calendar } from "lucide-react";
+import { Pill, Plus, Search, Filter, AlertTriangle, CheckCircle, Package, User, Calendar, ShoppingCart, Trash2, Calculator } from "lucide-react";
 
 const Pharmacy = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [cartItems, setCartItems] = useState([]);
+  const [customerInfo, setCustomerInfo] = useState({ name: "", phone: "", address: "" });
 
   const medicines = [
     {
@@ -87,6 +88,56 @@ const Pharmacy = () => {
   ];
 
   const categories = ["Analgesic", "Antibiotic", "Antidiabetic", "Cardiovascular", "Respiratory", "Dermatological"];
+
+  const addToCart = (medicine, quantity = 1) => {
+    const existingItem = cartItems.find(item => item.id === medicine.id);
+    if (existingItem) {
+      setCartItems(cartItems.map(item => 
+        item.id === medicine.id 
+          ? { ...item, quantity: item.quantity + quantity }
+          : item
+      ));
+    } else {
+      setCartItems([...cartItems, { ...medicine, quantity }]);
+    }
+  };
+
+  const removeFromCart = (medicineId) => {
+    setCartItems(cartItems.filter(item => item.id !== medicineId));
+  };
+
+  const updateCartQuantity = (medicineId, newQuantity) => {
+    if (newQuantity <= 0) {
+      removeFromCart(medicineId);
+    } else {
+      setCartItems(cartItems.map(item => 
+        item.id === medicineId 
+          ? { ...item, quantity: newQuantity }
+          : item
+      ));
+    }
+  };
+
+  const calculateTotal = () => {
+    return cartItems.reduce((total, item) => {
+      const price = parseFloat(item.unitPrice.replace('₹', ''));
+      return total + (price * item.quantity);
+    }, 0).toFixed(2);
+  };
+
+  const processSale = () => {
+    if (cartItems.length === 0) return;
+    
+    // Process the sale here
+    console.log('Processing sale:', { cartItems, customerInfo, total: calculateTotal() });
+    
+    // Clear cart after sale
+    setCartItems([]);
+    setCustomerInfo({ name: "", phone: "", address: "" });
+    
+    // Show success message
+    alert(`Sale processed successfully! Total: ₹${calculateTotal()}`);
+  };
 
   const getStockStatus = (current: number, minimum: number) => {
     if (current <= minimum) return { status: "Low Stock", color: "bg-red-100 text-red-800" };
@@ -235,6 +286,7 @@ const Pharmacy = () => {
         <TabsList>
           <TabsTrigger value="inventory">Medicine Inventory</TabsTrigger>
           <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
+          <TabsTrigger value="pos">Pharmacy POS</TabsTrigger>
           <TabsTrigger value="sales">Sales & Billing</TabsTrigger>
         </TabsList>
 
@@ -400,6 +452,201 @@ const Pharmacy = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="pos" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Medicine Selection */}
+            <div className="lg:col-span-2 space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ShoppingCart className="h-5 w-5" />
+                    Medicine Selection
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="Search medicines..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {medicines.map((medicine) => {
+                      const stockStatus = getStockStatus(medicine.stock, medicine.minStock);
+                      
+                      return (
+                        <Card key={medicine.id} className="hover:shadow-md transition-shadow">
+                          <CardContent className="p-4">
+                            <div className="space-y-2">
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <div className="font-semibold">{medicine.name}</div>
+                                  <div className="text-sm text-gray-600">{medicine.genericName}</div>
+                                </div>
+                                <Badge className={stockStatus.color}>{stockStatus.status}</Badge>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <div className="text-lg font-bold text-green-600">{medicine.unitPrice}</div>
+                                <div className="text-sm text-gray-600">Stock: {medicine.stock}</div>
+                              </div>
+                              
+                              <div className="flex gap-2">
+                                <Input 
+                                  type="number" 
+                                  placeholder="Qty" 
+                                  className="w-20" 
+                                  min="1"
+                                  max={medicine.stock}
+                                  id={`qty-${medicine.id}`}
+                                />
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => {
+                                    const qtyInput = document.getElementById(`qty-${medicine.id}`) as HTMLInputElement;
+                                    const quantity = parseInt(qtyInput?.value || "1");
+                                    addToCart(medicine, quantity);
+                                    if (qtyInput) qtyInput.value = "";
+                                  }}
+                                  className="bg-medical-500 hover:bg-medical-600"
+                                >
+                                  Add to Cart
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Cart & Billing */}
+            <div className="space-y-4">
+              {/* Customer Info */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    Customer Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Input 
+                    placeholder="Customer Name"
+                    value={customerInfo.name}
+                    onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                  />
+                  <Input 
+                    placeholder="Phone Number"
+                    value={customerInfo.phone}
+                    onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                  />
+                  <Input 
+                    placeholder="Address"
+                    value={customerInfo.address}
+                    onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Shopping Cart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <ShoppingCart className="h-5 w-5" />
+                      Cart ({cartItems.length})
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setCartItems([])}
+                      disabled={cartItems.length === 0}
+                    >
+                      Clear
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {cartItems.length === 0 ? (
+                    <div className="text-center py-4 text-gray-500">
+                      Cart is empty
+                    </div>
+                  ) : (
+                    cartItems.map((item) => (
+                      <div key={item.id} className="flex items-center justify-between p-2 border rounded">
+                        <div className="flex-1">
+                          <div className="font-medium text-sm">{item.name}</div>
+                          <div className="text-xs text-gray-600">{item.unitPrice} each</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Input 
+                            type="number" 
+                            value={item.quantity}
+                            onChange={(e) => updateCartQuantity(item.id, parseInt(e.target.value))}
+                            className="w-16 h-8"
+                            min="1"
+                          />
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Bill Summary */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calculator className="h-5 w-5" />
+                    Bill Summary
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="space-y-2">
+                    {cartItems.map((item) => (
+                      <div key={item.id} className="flex justify-between text-sm">
+                        <span>{item.name} x{item.quantity}</span>
+                        <span>₹{(parseFloat(item.unitPrice.replace('₹', '')) * item.quantity).toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="border-t pt-2">
+                    <div className="flex justify-between font-bold text-lg">
+                      <span>Total:</span>
+                      <span>₹{calculateTotal()}</span>
+                    </div>
+                  </div>
+
+                  <Button 
+                    className="w-full bg-medical-500 hover:bg-medical-600"
+                    onClick={processSale}
+                    disabled={cartItems.length === 0}
+                  >
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Process Sale
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </TabsContent>
 

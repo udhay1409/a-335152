@@ -52,7 +52,7 @@ function App() {
               <Route path="inventory" element={<Inventory />} />
               <Route path="ward-management" element={<WardManagement />} />
               <Route path="laboratory" element={<Laboratory />} />
-              <Route path="pharmacy" element={<Laboratory />} />
+              <Route path="pharmacy" element={<Pharmacy />} />
               <Route path="emergency" element={<Emergency />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="user-management" element={<UserManagement />} />

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -72,10 +71,18 @@ const Settings = () => {
   });
 
   const handleSaveSettings = (section: string) => {
-    toast({
-      title: "Settings Saved",
-      description: `${section} settings have been updated successfully.`,
-    });
+    // Simulate saving with delay
+    setTimeout(() => {
+      toast({
+        title: "Settings Saved",
+        description: `${section} settings have been updated successfully.`,
+      });
+    }, 500);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent, section: string) => {
+    e.preventDefault();
+    handleSaveSettings(section);
   };
 
   return (
@@ -164,9 +171,11 @@ const Settings = () => {
                   className="min-h-[100px]"
                 />
               </div>
-              <Button onClick={() => handleSaveSettings("Hospital")} className="w-full">
-                Save Hospital Settings
-              </Button>
+              <form onSubmit={(e) => handleFormSubmit(e, "Hospital")}>
+                <Button className="w-full">
+                  Save Hospital Settings
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>
@@ -242,9 +251,11 @@ const Settings = () => {
                   />
                 </div>
               </div>
-              <Button onClick={() => handleSaveSettings("Notification")} className="w-full">
-                Save Notification Settings
-              </Button>
+              <form onSubmit={(e) => handleFormSubmit(e, "Notification")}>
+                <Button className="w-full">
+                  Save Notification Settings
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>
@@ -333,9 +344,11 @@ const Settings = () => {
                   }
                 />
               </div>
-              <Button onClick={() => handleSaveSettings("Security")} className="w-full">
-                Save Security Settings
-              </Button>
+              <form onSubmit={(e) => handleFormSubmit(e, "Security")}>
+                <Button className="w-full">
+                  Save Security Settings
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>
@@ -411,9 +424,11 @@ const Settings = () => {
                   </Select>
                 </div>
               </div>
-              <Button onClick={() => handleSaveSettings("System")} className="w-full">
-                Save System Settings
-              </Button>
+              <form onSubmit={(e) => handleFormSubmit(e, "System")}>
+                <Button className="w-full">
+                  Save System Settings
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>
@@ -465,9 +480,11 @@ const Settings = () => {
                   </div>
                 </div>
               </div>
-              <Button onClick={() => handleSaveSettings("Integration")} className="w-full">
-                Save Integration Settings
-              </Button>
+              <form onSubmit={(e) => handleFormSubmit(e, "Integration")}>
+                <Button className="w-full">
+                  Save Integration Settings
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>

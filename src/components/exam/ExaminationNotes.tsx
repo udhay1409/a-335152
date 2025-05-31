@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { FileText, Save, Eye, Ear, Heart, Wind } from "lucide-react";
 
 interface ExaminationNotesProps {
@@ -10,6 +11,7 @@ interface ExaminationNotesProps {
 }
 
 const ExaminationNotes = ({ patientId }: ExaminationNotesProps) => {
+  const { toast } = useToast();
   const [activeSystem, setActiveSystem] = useState("general");
   const [examData, setExamData] = useState({
     general: "",
@@ -20,6 +22,7 @@ const ExaminationNotes = ({ patientId }: ExaminationNotesProps) => {
     musculoskeletal: "",
     dermatological: ""
   });
+  const [saving, setSaving] = useState(false);
 
   const systemsExam = [
     { id: "general", name: "General Appearance", icon: Eye, color: "text-blue-500" },
@@ -55,6 +58,29 @@ const ExaminationNotes = ({ patientId }: ExaminationNotesProps) => {
       ...examData,
       [activeSystem]: value
     });
+  };
+
+  const handleSaveFindings = async () => {
+    setSaving(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "Findings Saved",
+        description: `${systemsExam.find(s => s.id === activeSystem)?.name} examination findings have been saved successfully.`,
+      });
+      
+      console.log(`Saved findings for ${activeSystem}:`, examData[activeSystem as keyof typeof examData]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save findings. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const getSystemStatus = (systemId: string) => {
@@ -111,22 +137,29 @@ const ExaminationNotes = ({ patientId }: ExaminationNotesProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Textarea
-            placeholder={`Enter ${systemsExam.find(s => s.id === activeSystem)?.name.toLowerCase()} examination findings...`}
-            value={examData[activeSystem as keyof typeof examData]}
-            onChange={(e) => handleNotesChange(e.target.value)}
-            className="min-h-32"
-          />
-          
-          <div className="flex justify-between items-center">
-            <div className="text-sm text-gray-500">
-              Last updated: {new Date().toLocaleString()}
+          <form onSubmit={(e) => { e.preventDefault(); handleSaveFindings(); }}>
+            <Textarea
+              placeholder={`Enter ${systemsExam.find(s => s.id === activeSystem)?.name.toLowerCase()} examination findings...`}
+              value={examData[activeSystem as keyof typeof examData]}
+              onChange={(e) => handleNotesChange(e.target.value)}
+              className="min-h-32"
+              required
+            />
+            
+            <div className="flex justify-between items-center mt-4">
+              <div className="text-sm text-gray-500">
+                Last updated: {new Date().toLocaleString()}
+              </div>
+              <Button 
+                type="submit"
+                className="bg-medical-500 hover:bg-medical-600"
+                disabled={saving || !examData[activeSystem as keyof typeof examData].trim()}
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {saving ? "Saving..." : "Save Findings"}
+              </Button>
             </div>
-            <Button className="bg-medical-500 hover:bg-medical-600">
-              <Save className="h-4 w-4 mr-2" />
-              Save Findings
-            </Button>
-          </div>
+          </form>
         </CardContent>
       </Card>
 

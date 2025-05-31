@@ -7,10 +7,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building, Bed, Plus, Search, Filter, User, Clock, AlertTriangle, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const WardManagement = () => {
+  const { toast } = useToast();
   const [selectedWard, setSelectedWard] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAddWardOpen, setIsAddWardOpen] = useState(false);
+  const [isAddBedOpen, setIsAddBedOpen] = useState(false);
+  const [newWard, setNewWard] = useState({
+    name: "",
+    floor: "",
+    totalBeds: "",
+    type: "",
+    nurseInCharge: ""
+  });
+  const [newBed, setNewBed] = useState({
+    bedNumber: "",
+    wardId: ""
+  });
 
   const wards = [
     {
@@ -100,6 +115,52 @@ const WardManagement = () => {
     }
   };
 
+  const handleAddWard = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newWard.name || !newWard.floor || !newWard.totalBeds || !newWard.type) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log("Adding new ward:", newWard);
+    
+    toast({
+      title: "Ward Added",
+      description: `${newWard.name} has been successfully added.`,
+    });
+    
+    setNewWard({ name: "", floor: "", totalBeds: "", type: "", nurseInCharge: "" });
+    setIsAddWardOpen(false);
+  };
+
+  const handleAddBed = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newBed.bedNumber || !newBed.wardId) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log("Adding new bed:", newBed);
+    
+    toast({
+      title: "Bed Added",
+      description: `Bed ${newBed.bedNumber} has been successfully added.`,
+    });
+    
+    setNewBed({ bedNumber: "", wardId: "" });
+    setIsAddBedOpen(false);
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -108,7 +169,7 @@ const WardManagement = () => {
           <h1 className="text-3xl font-bold text-gray-900">Ward Management</h1>
         </div>
         <div className="flex gap-2">
-          <Dialog>
+          <Dialog open={isAddBedOpen} onOpenChange={setIsAddBedOpen}>
             <DialogTrigger asChild>
               <Button variant="outline">
                 <Bed className="h-4 w-4 mr-2" />
@@ -119,11 +180,16 @@ const WardManagement = () => {
               <DialogHeader>
                 <DialogTitle>Add New Bed</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
-                <Input placeholder="Bed Number (e.g., A-001)" />
-                <Select>
+              <form onSubmit={handleAddBed} className="space-y-4">
+                <Input 
+                  placeholder="Bed Number (e.g., A-001) *" 
+                  value={newBed.bedNumber}
+                  onChange={(e) => setNewBed({...newBed, bedNumber: e.target.value})}
+                  required
+                />
+                <Select value={newBed.wardId} onValueChange={(value) => setNewBed({...newBed, wardId: value})}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Ward" />
+                    <SelectValue placeholder="Select Ward *" />
                   </SelectTrigger>
                   <SelectContent>
                     {wards.map((ward) => (
@@ -134,13 +200,17 @@ const WardManagement = () => {
                   </SelectContent>
                 </Select>
                 <div className="flex gap-2">
-                  <Button variant="outline">Cancel</Button>
-                  <Button className="bg-medical-500 hover:bg-medical-600">Add Bed</Button>
+                  <Button type="button" variant="outline" onClick={() => setIsAddBedOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" className="bg-medical-500 hover:bg-medical-600">
+                    Add Bed
+                  </Button>
                 </div>
-              </div>
+              </form>
             </DialogContent>
           </Dialog>
-          <Dialog>
+          <Dialog open={isAddWardOpen} onOpenChange={setIsAddWardOpen}>
             <DialogTrigger asChild>
               <Button className="bg-medical-500 hover:bg-medical-600">
                 <Plus className="h-4 w-4 mr-2" />
@@ -151,28 +221,52 @@ const WardManagement = () => {
               <DialogHeader>
                 <DialogTitle>Add New Ward</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
-                <Input placeholder="Ward Name" />
-                <Input placeholder="Floor" />
-                <Input placeholder="Total Beds" type="number" />
-                <Select>
+              <form onSubmit={handleAddWard} className="space-y-4">
+                <Input 
+                  placeholder="Ward Name *" 
+                  value={newWard.name}
+                  onChange={(e) => setNewWard({...newWard, name: e.target.value})}
+                  required
+                />
+                <Input 
+                  placeholder="Floor *" 
+                  value={newWard.floor}
+                  onChange={(e) => setNewWard({...newWard, floor: e.target.value})}
+                  required
+                />
+                <Input 
+                  placeholder="Total Beds *" 
+                  type="number" 
+                  value={newWard.totalBeds}
+                  onChange={(e) => setNewWard({...newWard, totalBeds: e.target.value})}
+                  required
+                />
+                <Select value={newWard.type} onValueChange={(value) => setNewWard({...newWard, type: value})}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Ward Type" />
+                    <SelectValue placeholder="Ward Type *" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="icu">ICU</SelectItem>
-                    <SelectItem value="pediatric">Pediatric</SelectItem>
-                    <SelectItem value="maternity">Maternity</SelectItem>
-                    <SelectItem value="emergency">Emergency</SelectItem>
+                    <SelectItem value="General">General</SelectItem>
+                    <SelectItem value="ICU">ICU</SelectItem>
+                    <SelectItem value="Pediatric">Pediatric</SelectItem>
+                    <SelectItem value="Maternity">Maternity</SelectItem>
+                    <SelectItem value="Emergency">Emergency</SelectItem>
                   </SelectContent>
                 </Select>
-                <Input placeholder="Nurse In-Charge" />
+                <Input 
+                  placeholder="Nurse In-Charge" 
+                  value={newWard.nurseInCharge}
+                  onChange={(e) => setNewWard({...newWard, nurseInCharge: e.target.value})}
+                />
                 <div className="flex gap-2">
-                  <Button variant="outline">Cancel</Button>
-                  <Button className="bg-medical-500 hover:bg-medical-600">Add Ward</Button>
+                  <Button type="button" variant="outline" onClick={() => setIsAddWardOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" className="bg-medical-500 hover:bg-medical-600">
+                    Add Ward
+                  </Button>
                 </div>
-              </div>
+              </form>
             </DialogContent>
           </Dialog>
         </div>

@@ -6,11 +6,21 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Users, Plus, Search, Filter, Stethoscope, User, UserCheck, Clock, Phone, Mail, MapPin } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Staff = () => {
+  const { toast } = useToast();
   const [selectedDepartment, setSelectedDepartment] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newStaff, setNewStaff] = useState({
+    name: "",
+    role: "",
+    department: "",
+    qualification: "",
+    phone: "",
+    email: ""
+  });
 
   const staff = [
     {
@@ -92,6 +102,39 @@ const Staff = () => {
     return <UserCheck className="h-4 w-4" />;
   };
 
+  const handleAddStaff = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newStaff.name || !newStaff.role || !newStaff.department) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Simulate adding staff member
+    console.log("Adding new staff member:", newStaff);
+    
+    toast({
+      title: "Staff Added",
+      description: `${newStaff.name} has been successfully added to the system.`,
+    });
+    
+    // Reset form
+    setNewStaff({
+      name: "",
+      role: "",
+      department: "",
+      qualification: "",
+      phone: "",
+      email: ""
+    });
+    
+    setIsAddModalOpen(false);
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -110,43 +153,61 @@ const Staff = () => {
             <DialogHeader>
               <DialogTitle>Add New Staff Member</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <Input placeholder="Full Name" />
-              <Select>
+            <form onSubmit={handleAddStaff} className="space-y-4">
+              <Input 
+                placeholder="Full Name *" 
+                value={newStaff.name}
+                onChange={(e) => setNewStaff({...newStaff, name: e.target.value})}
+                required
+              />
+              <Select value={newStaff.role} onValueChange={(value) => setNewStaff({...newStaff, role: value})}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Role" />
+                  <SelectValue placeholder="Select Role *" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="doctor">Doctor</SelectItem>
-                  <SelectItem value="nurse">Nurse</SelectItem>
-                  <SelectItem value="technician">Technician</SelectItem>
-                  <SelectItem value="admin">Admin Staff</SelectItem>
+                  <SelectItem value="Doctor">Doctor</SelectItem>
+                  <SelectItem value="Nurse">Nurse</SelectItem>
+                  <SelectItem value="Technician">Technician</SelectItem>
+                  <SelectItem value="Admin Staff">Admin Staff</SelectItem>
                 </SelectContent>
               </Select>
-              <Select>
+              <Select value={newStaff.department} onValueChange={(value) => setNewStaff({...newStaff, department: value})}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Department" />
+                  <SelectValue placeholder="Select Department *" />
                 </SelectTrigger>
                 <SelectContent>
                   {departments.map((dept) => (
-                    <SelectItem key={dept} value={dept.toLowerCase()}>
+                    <SelectItem key={dept} value={dept}>
                       {dept}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <Input placeholder="Qualification" />
-              <Input placeholder="Phone Number" />
-              <Input placeholder="Email Address" />
+              <Input 
+                placeholder="Qualification" 
+                value={newStaff.qualification}
+                onChange={(e) => setNewStaff({...newStaff, qualification: e.target.value})}
+              />
+              <Input 
+                placeholder="Phone Number" 
+                value={newStaff.phone}
+                onChange={(e) => setNewStaff({...newStaff, phone: e.target.value})}
+              />
+              <Input 
+                placeholder="Email Address" 
+                type="email"
+                value={newStaff.email}
+                onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
+              />
               <div className="flex gap-2">
-                <Button onClick={() => setIsAddModalOpen(false)} variant="outline">
+                <Button type="button" onClick={() => setIsAddModalOpen(false)} variant="outline">
                   Cancel
                 </Button>
-                <Button className="bg-medical-500 hover:bg-medical-600">
+                <Button type="submit" className="bg-medical-500 hover:bg-medical-600">
                   Add Staff
                 </Button>
               </div>
-            </div>
+            </form>
           </DialogContent>
         </Dialog>
       </div>

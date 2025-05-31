@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -80,7 +81,10 @@ export default function Symptoms() {
     setPrediction(null);
 
     try {
-      // Simulate API response with mock data
+      // Simulate API call with delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Detect disease based on symptoms
       const symptomsLower = symptoms.toLowerCase();
       let detectedDisease = "cold"; // default
 
@@ -112,6 +116,12 @@ export default function Symptoms() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleClearForm = () => {
+    setSymptoms("");
+    setPrediction(null);
+    setSelectedDisease(null);
   };
 
   return (

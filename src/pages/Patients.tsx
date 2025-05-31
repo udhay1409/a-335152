@@ -1,10 +1,10 @@
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Users, Search, Phone, Mail, Calendar, Shield, Edit } from "lucide-react";
+import { Users, Search, Phone, Mail, Calendar, Shield, Edit, Stethoscope } from "lucide-react";
 import ABHAModal from "@/components/patients/ABHAModal";
 import ABHAStatus from "@/components/patients/ABHAStatus";
 import PatientFormDialog from "@/components/patients/PatientFormDialog";
@@ -14,6 +14,7 @@ import MedicalRecordsDialog from "@/components/patients/MedicalRecordsDialog";
 
 const Patients = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const patients = [
     {
@@ -93,6 +94,10 @@ const Patients = () => {
       case "Critical": return "bg-red-100 text-red-800";
       default: return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const handleStartExam = (patientId: number) => {
+    navigate(`/patient-exam?patientId=${patientId}&role=doctor`);
   };
 
   return (
@@ -194,39 +199,49 @@ const Patients = () => {
                     </Button>
                   }
                 />
+                <Button 
+                  size="sm" 
+                  className="flex-1 bg-medical-500 hover:bg-medical-600"
+                  onClick={() => handleStartExam(patient.id)}
+                >
+                  <Stethoscope className="h-4 w-4 mr-1" />
+                  Start Exam
+                </Button>
+              </div>
+
+              <div className="flex gap-2">
                 <ScheduleDialog
                   patient={patient}
                   trigger={
-                    <Button size="sm" className="flex-1 bg-medical-500 hover:bg-medical-600">
+                    <Button variant="outline" size="sm" className="flex-1">
                       Schedule
                     </Button>
                   }
                 />
+                {/* ABHA Actions */}
+                {patient.abhaId && (
+                  <>
+                    <ABHAModal
+                      trigger={
+                        <Button variant="outline" size="sm" className="flex-1 text-xs">
+                          <Shield className="h-3 w-3 mr-1" />
+                          Manage ABHA
+                        </Button>
+                      }
+                      patientId={patient.id}
+                      existingABHA={patient.abhaId}
+                    />
+                    <MedicalRecordsDialog
+                      patient={patient}
+                      trigger={
+                        <Button variant="outline" size="sm" className="flex-1 text-xs">
+                          View Records
+                        </Button>
+                      }
+                    />
+                  </>
+                )}
               </div>
-
-              {/* ABHA Actions */}
-              {patient.abhaId && (
-                <div className="flex gap-2 pt-1">
-                  <ABHAModal
-                    trigger={
-                      <Button variant="outline" size="sm" className="flex-1 text-xs">
-                        <Shield className="h-3 w-3 mr-1" />
-                        Manage ABHA
-                      </Button>
-                    }
-                    patientId={patient.id}
-                    existingABHA={patient.abhaId}
-                  />
-                  <MedicalRecordsDialog
-                    patient={patient}
-                    trigger={
-                      <Button variant="outline" size="sm" className="flex-1 text-xs">
-                        View Records
-                      </Button>
-                    }
-                  />
-                </div>
-              )}
             </CardContent>
           </Card>
         ))}

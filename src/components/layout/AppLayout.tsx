@@ -1,6 +1,8 @@
 
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import { Toaster } from "@/components/ui/toaster";
+import AIAgentToggle from "@/components/ai/AIAgentToggle";
 
 const AppLayout = () => {
   return (
@@ -9,6 +11,8 @@ const AppLayout = () => {
       <main className="flex-1 overflow-auto">
         <Outlet />
       </main>
+      <AIAgentToggle />
+      <Toaster />
     </div>
   );
 };
